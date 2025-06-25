@@ -1,0 +1,12 @@
+FROM node:18-alpine as builder
+
+WORKDIR /app
+ENV NODE_OPTIONS=--openssl-legacy-provider
+
+COPY . .
+RUN npm install && npm run build
+
+FROM nginx:alpine
+COPY --from=builder /app/target/classes/static/built /usr/share/nginx/html
+EXPOSE 80
+
